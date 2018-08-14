@@ -9,9 +9,10 @@ fi
 showHelp(){
   echo -e "one - используйте в первый раз, правильная настройка групп и контейнеров(потребует пароль sudo)"
   echo -e "try - попробовать произвести настройку без sudo(скорее всего не сможет добавить группы)"
-  echo -e "start - запустит проект"
+  echo -e "up - запустит проект(PHP7.2-nginx-apache2-mysql5.7-adminer)"
+  echo -e "upfull - запустит FULL проект(up()+MonitoringService-Networks)"
   echo -e "stop - усыпит и остановит все контейнеры проекта"
-  echo -e ""
+  echo -e "clear - сборщик мусора"
 }
 
 one(){
