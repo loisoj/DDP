@@ -9,38 +9,57 @@ volumes:
     grafana_data: {}
 
 services:
+  apache:
+    image: httpd:2.4
+    volumes:
+      - ./www:/var/www/html
+      - ./hosts/httpd/httpd.conf:/usr/local/apache2/conf/httpd.conf
+    depends_on:
+      - php
+    networks:
+      - monitor-net
 
   nginx:
-    image: nginx:latest
+    image: nginx:1.13
     ports:
       - "7666:80"
       - "7771:443"
     volumes:
-      - ./hosts:/etc/nginx/conf.d
-      - ./www:/var/www
+      - ./www:/var/www/html
+      - ./hosts/nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./logs:/var/log/nginx
-    links:
-      - php
+    depends_on:
+      - apache
+    networks:
+      - monitor-net
+
   php:
-    build: ./images/php
-    links:
-      - db
+    image: php:7.2-fpm
     volumes:
-      - ./www:/var/www
+      - ./www:/var/www/html
+    networks:
+      - monitor-net
+
   db:
-    image: mysql:8
+    image: mysql:5.7
     restart: always
     volumes:
-      - ./mysql:/var/mysql
+      - ./images/mysql:/var/mysql
     environment:
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: admin
       MYSQL_ROOT_USER: root
       MYSQL_ROOT_PASSWORD: example
+    networks:
+      - monitor-net
 
   adminer:
     build: ./images/adminer
     restart: always
     ports:
       - 8080:8080
+    networks:
+      - monitor-net
 
   prometheus:
     image: prom/prometheus:v2.0.0
