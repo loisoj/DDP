@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+
+# имя функции для запуска
+FUNCTION=
+if [ ! -z $1 ]; then
+    FUNCTION="$1"
+fi
+
+showHelp(){
+  echo -e "one - используйте в первый раз, правильная настройка групп и контейнеров(потребует пароль sudo)"
+  echo -e "try - попробовать произвести настройку без sudo(скорее всего не сможет добавить группы)"
+  echo -e "start - запустит проект"
+  echo -e "stop - усыпит и остановит все контейнеры проекта"
+  echo -e ""
+}
+
+one(){
+sudo groupadd docker
+sudo usermod -aG docker $USER
+sudo service docker restart
+docker-compose up --build -d
+docker ps
+}
+
+try(){
+groupadd docker
+usermod -aG docker $USER
+service docker restart
+docker-compose up --build -d
+docker ps
+}
+
+stop(){
+docker-compose stop
+docker-compose down
+}
+
+start(){
+docker-compose up -d
+}
+
+
+   if [ ! -z $(type -t $FUNCTION | grep function) ]; then
+        init-xdebug
+        check-env
+        $1
+    else
+        showHelp
+fi

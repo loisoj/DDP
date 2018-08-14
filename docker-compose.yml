@@ -4,35 +4,32 @@ services:
 
   nginx:
     image: nginx:latest
-        # маршрутизируем порты
     ports:
       - "7666:80"
       - "7771:443"
-        # монтируем директории, слева директории на основной машине, справа - куда они монтируются в контейнере
     volumes:
       - ./hosts:/etc/nginx/conf.d
       - ./www:/var/www
       - ./logs:/var/log/nginx
-        # nginx должен общаться с php контейнером
     links:
       - php
   php:
-        # у нас свой образ для PHP, указываем путь к нему и говорим что его надо собрать
     build: ./images/php
-        # этот образ будет общаться с mysql
     links:
       - db
-        # монтируем директорию с проектами
     volumes:
       - ./www:/var/www
   db:
     image: mysql:8
     restart: always
+    volumes:
+      - ./mysql:/var/mysql
     environment:
+      MYSQL_ROOT_USER: root
       MYSQL_ROOT_PASSWORD: example
 
   adminer:
-    image: adminer
+    build: ./images/adminer
     restart: always
     ports:
       - 8080:8080
