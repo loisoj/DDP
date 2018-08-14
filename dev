@@ -38,8 +38,7 @@ docker-compose -f full.yml up --build -d
 }
 
 stop(){
-docker-compose stop
-docker-compose down
+docker stop $(docker ps -a -q)
 }
 
 clear(){
