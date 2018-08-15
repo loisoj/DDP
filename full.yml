@@ -34,7 +34,9 @@ services:
       - monitor-net
 
   php:
-    image: php:7.2-fpm
+    build: ./images/php
+    links:
+      - db
     volumes:
       - ./www:/var/www/html
     networks:
